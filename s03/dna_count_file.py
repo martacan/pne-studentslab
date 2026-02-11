@@ -20,6 +20,10 @@ for sequence in lines:
     total_number += len(sequence)
 
     result = count_bases(sequence)
+    for key in result:
+        bases[key] += result[key]
+
+
 
 
 
