@@ -1,10 +1,10 @@
 from pathlib import Path
-from Seq0 import seq_reverse
+from Seq0 import *
 
 if __name__ == "__main__":
-    print("----| Exercise 6 |----")
-    print(f"Gene U5")
+    print("-----| Exercise 7|----")
+    print("Gene U5")
     FOLDER = "sequences/"
     FILENAME = "U5.txt"
     file_contents = Path(FOLDER + FILENAME).read_text()
-    print(f"REVERSE: {seq_reverse(file_contents, 20)}")
+    print(f"Comp: {seq_complement(file_contents)}")

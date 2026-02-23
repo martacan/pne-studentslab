@@ -4,11 +4,11 @@ def seq_ping():
     print("OK")
 
 from pathlib import Path
-def seq_read_fasta(filename):
-    file_contents = Path(filename).read_text()
-    d = file_contents.find("\n")
-    sequence = file_contents[d:].replace("\n", "")
-    return sequence
+def seq_read_fasta(seq):
+    body = seq.find("\n")
+    seq = seq[body:]
+    seq = seq.replace("\n", "")
+    return seq
 
 
 def seq_len(seq):
@@ -32,49 +32,23 @@ def seq_reverse(seq, n):
     body = seq.find("\n")
     seq = seq[body:]
     seq = seq.replace("\n", "")
-    fragment = seq[:n]
-    print(f"Fragment: {fragment}")
-    reverse_fragment = fragment[::-1]
-
-    return reverse_fragment
-
+    seq_n = seq[:n]
+    reverse_seq = seq_n[::-1]
+    print(f"Fragment: {seq_n}")
+    return reverse_seq
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def seq_complement(seq):
+    i = seq.find(" \n")
+    body = seq[i:]
+    bases = body.replace("\n", "")
+    seq_20 = bases[:20]
+    base_replace = {"A" : "U", "T" : "A", "C" : "G", "G": "C"}
+    complement_chain = ""
+    print("Frag: ", seq_20)
+    for b in seq_20:
+        complement_chain += base_replace.get(b, b)
+    return complement_chain
 
 
 
