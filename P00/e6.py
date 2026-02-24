@@ -1,5 +1,5 @@
 from pathlib import Path
-from Seq0 import seq_reverse
+from Seq0 import *
 
 if __name__ == "__main__":
     print("----| Exercise 6 |----")

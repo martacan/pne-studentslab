@@ -1,5 +1,5 @@
 from pathlib import Path
-from Seq0 import *
+from Seq0 import seq_complement
 
 if __name__ == "__main__":
     print("-----| Exercise 7|----")

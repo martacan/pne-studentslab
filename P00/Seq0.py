@@ -29,20 +29,20 @@ def seq_count(seq):
     return bases
 
 def seq_reverse(seq, n):
-    body = seq.find("\n")
-    seq = seq[body:]
-    seq = seq.replace("\n", "")
-    seq_n = seq[:n]
+    i = seq.find("\n")
+    body = seq[i:]
+    bases = body.replace("\n", "")
+    seq_n = bases[:n]
     reverse_seq = seq_n[::-1]
     print(f"Fragment: {seq_n}")
     return reverse_seq
 
 
 def seq_complement(seq):
-    i = seq.find(" \n")
+    i = seq.find("\n")
     body = seq[i:]
-    bases = body.replace("\n", "")
-    seq_20 = bases[:20]
+    seq = body.replace("\n", "")
+    seq_20 = seq[:20]
     base_replace = {"A" : "U", "T" : "A", "C" : "G", "G": "C"}
     complement_chain = ""
     print("Frag: ", seq_20)
