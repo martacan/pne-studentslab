@@ -25,7 +25,6 @@ def seq_count(seq):
     for base in seq:
         if base in bases:
             bases[base] += 1
-
     return bases
 
 def seq_reverse(seq, n):
@@ -36,8 +35,6 @@ def seq_reverse(seq, n):
     reverse_seq = seq_n[::-1]
     print(f"Fragment: {seq_n}")
     return reverse_seq
-
-
 def seq_complement(seq):
     i = seq.find("\n")
     body = seq[i:]
@@ -49,6 +46,9 @@ def seq_complement(seq):
     for b in seq_20:
         complement_chain += base_replace.get(b, b)
     return complement_chain
+def seq_complement(seq):
+    if self.strbases in ["NULL", "ERROR"]:
+        return self.strbases
 
 def most_frequent_base(seq):
     bases = {"A": 0, "C": 0, "G": 0, "T": 0}
