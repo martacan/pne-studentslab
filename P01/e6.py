@@ -1,0 +1,11 @@
+from Seq1 import Seq
+print("----|Practise 1, Exercise 6|-----")
+s1 = Seq()
+s2 = Seq("ACTGA")
+s3 = Seq("Invalid Sequence")
+print(f"Sequence1: (length: {s1.len()}) {s1}")
+print("Bases", s1.count())
+print(f"Sequence1: (length: {s2.len()}) {s2}")
+print("Bases:", s2.count())
+print(f"Sequence1: (length: {s3.len()}) {s3}")
+print("Bases:", s3.count())
