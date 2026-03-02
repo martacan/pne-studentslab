@@ -3,12 +3,15 @@ print("----|Practise 1, Exercise 7|-----")
 s1 = Seq()
 s2 = Seq("ACTGA")
 s3 = Seq("Invalid Sequence")
-print(f"Sequence1: (length: {s1.len()}) {s1} ")
-print("Bases:", s1.count())
-print("Rev:", s1.reverse())
-print(f"Sequence1: (length: {s2.len()}) {s2}")
-print("Bases", s2.count())
-print("Rev:", s2.reverse())
-print(f"Sequence1: (length: {s3.len()}) {s3}")
-print("Bases", s3.count())
-print("Rev:", s3.reverse())
+print(f"""
+Sequence 0: (length: {s1.len()}) {s1} 
+Bases: {s1.count()}
+Rev: {s1.reverse()}""")
+print(f"""
+Sequence 1: (length: {s2.len()}) {s2} 
+Bases: {s2.count()}
+Rev: {s2.reverse()}""")
+print(f"""
+Sequence 2: (length: {s3.len()}) {s3} 
+Bases: {s3.count()}
+Rev: {s3.reverse()}""")
