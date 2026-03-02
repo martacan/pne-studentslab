@@ -1,2 +1,17 @@
 from Seq1 import Seq
-
+print("----|Practise 1, Exercise 10|-----")
+s1 = Seq()
+s1.read_fasta("U5.txt")
+print(f"gene: {s1} Most frequent base: {s1.most_frequent_base()}")
+s2 = Seq()
+s2.read_fasta("ADA.txt")
+print(f"gene: {s2} Most frequent base: {s2.most_frequent_base()}")
+s3 = Seq()
+s3.read_fasta("FRAT1.txt")
+print(f"gene: {s3} Most frequent base: {s3.most_frequent_base()}")
+s4 = Seq()
+s4.read_fasta("FXN.txt")
+print(f"gene:  Most frequent base: {s4.most_frequent_base()}")
+s5 = Seq()
+s5.read_fasta("RNU6_269P.txt")
+print(f"gene: RNU6_269P Most frequent base: {s5.most_frequent_base()}")

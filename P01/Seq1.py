@@ -50,7 +50,6 @@ class Seq:
         file_content = file_path.read_text()
         lines = file_content.split("\n")
         self.strbases = "".join(lines[1:]).replace("\n", "")
-        print("File loaded!")
     def most_frequent_base(self):
         if self.strbases in ["NULL", "ERROR"]:
             return "ERROR"
