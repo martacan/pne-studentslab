@@ -1,9 +1,7 @@
 from Client0 import Client
 
-PRACTICE = 2
-EXERCISE = 1
 
-print(f"-----| Practice {PRACTICE}, Exercise {EXERCISE} |------")
+print(f"-----| Practice 2, Exercise 1 |------")
 
 # -- Parameters of the server to talk to
 IP = "192.168.1.45" # your IP address
