@@ -1,5 +1,8 @@
 from Client0 import Client
-print(f"-----| Practice 2, Exercise 2 |------")
+PRACTICE = 2
+EXERCISE = 2
+
+print(f"-----| Practice {PRACTICE}, Exercise {EXERCISE} |------")
 
 
 IP = "212.128.255.80"
