@@ -41,8 +41,8 @@ while True:
 
     # -- Print the received message
     print(f"Message received: {msg}")
-
     # -- Send a response message to the client
+
     response = "ECHO: " + msg
 
     # -- The message has to be encoded into bytes

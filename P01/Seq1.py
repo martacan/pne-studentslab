@@ -46,10 +46,11 @@ class Seq:
         if not file_path.exists():
             print(f"File{filename} does not exist")
             self.strbases = "ERROR"
-            return
+            return self.strbases
         file_content = file_path.read_text()
         lines = file_content.split("\n")
         self.strbases = "".join(lines[1:]).replace("\n", "")
+        return self.strbases
     def most_frequent_base(self):
         if self.strbases in ["NULL", "ERROR"]:
             return "ERROR"
