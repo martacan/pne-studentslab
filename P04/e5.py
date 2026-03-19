@@ -27,7 +27,12 @@ if __name__== "__main__":
                 FILENAME = "./html/info/A.html"
             elif path == "/info/C":
                 FILENAME = "./html/info/C.html"
-
+            elif path == "/info/G":
+                FILENAME = "./html/info/G.html"
+            elif path == "/info/T":
+                FILENAME = "./html/info/T.html"
+            else:
+                FILENAME = "./html/info/error.html"
 
 
         b = Path(FILENAME).read_text()
