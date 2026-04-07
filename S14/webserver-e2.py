@@ -1,6 +1,7 @@
 import http.server
 import socketserver
 import termcolor
+from pathlib import Path
 
 # Define the Server's port
 PORT = 8080
@@ -20,10 +21,10 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         # Print the request line
 
         termcolor.cprint(self.requestline, 'green')
-        if self.path == "/" or self.path == "":
-            contents = "Welcome to my server"
+        if self.path == "/" or self.path == "/index.html":
+            contents = Path("index.html").read_text()
         else:
-            contents = "Resource not available"
+            contents = Path("error.html").read_text()
         # IN this simple server version:
         # We are NOT processing the client's request
         # It is a happy server: It always returns a message saying
@@ -36,7 +37,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         self.send_response(200)  # -- Status line: OK!
 
         # Define the content-type header:
-        self.send_header('Content-Type', 'text/plain')
+        self.send_header('Content-Type', 'text/html')
         self.send_header('Content-Length', len(contents.encode()))
 
         # The header is finished
