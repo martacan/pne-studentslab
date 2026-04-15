@@ -2,6 +2,9 @@ import http.server
 import socketserver
 import termcolor
 from pathlib import Path
+import jinja2 as j
+
+
 
 # Define the Server's port
 PORT = 8080
@@ -26,34 +29,13 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         arguments = parse_qs(url_path.query)
 
         if path == "/":
-            contents = Path('html/form-2-personalized.html').read_text()
+            contents = Path('html/index.html').read_text()
 
-        elif path.startswith("/myserver"):
-            print(path)
-            if len(arguments) > 1:
-                contents = f""" <!DOCTYPE html>
-                <html lang="en" dir="ltr" >
-                <head>
-                <meta charset="UTF-8">
-                <title>Received message</title>
-                </head>
-                <body style="background-color: lightgreen;">
-                <h1>Received message</h1>
-                <p>{arguments["msg"][0].upper()}</p>
-                <a href="/">Main Page</a>"""
-            else:
-                contents = f""" <!DOCTYPE html>
-                                <html lang="en" dir="ltr" >
-                                <head>
-                                <meta charset="UTF-8">
-                                <title>Received message</title>
-                                </head>
-                                <body style="background-color: yellow;">
-                                <h1>Received message</h1>
-                                <p>{arguments["msg"][0]}</p>
-                                <a href="/">Main Page</a>"""
+        elif path.startswith("/ping"):
+            contents = Path('html/ping.html').read_text()
         else:
             contents = Path('html/error.html').read_text()
+
 
         # Open the form1.html file
         # Read the index from the file
