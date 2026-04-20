@@ -3,11 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Get Result</title>
+
 </head>
 <body>
     <h1>Gene: {{ gene_name }}</h1>
-    <p>{{ gene_sequence }}</p>
+    <div style="height: 200px; overflow: auto; border: 1px solid black; background: white; padding: 4px;">
+        {{ gene_sequence }}
 
+    </div>
+    <br>
 
 </body>
 <a href="/">Main Page</a>
