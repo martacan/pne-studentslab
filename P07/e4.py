@@ -28,24 +28,21 @@ print(f"\nGene: {gene_name}")
 print(f"Description: {response["desc"]}")
 
 sequence = response["seq"]
+s = Seq(sequence)
 print(f"New sequence created!")
 
-lenght = len(sequence)
+lenght = s.len()
 print(f"Total length {lenght}")
 
-count_a = sequence.count("A")
-count_c = sequence.count("C")
-count_g = sequence.count("G")
-count_t = sequence.count("T")
 
-perc_a = round((count_a / lenght) * 100, 2)
-perc_c = round((count_c / lenght) * 100, 2)
-perc_g = round((count_g / lenght) * 100, 2)
-perc_t = round((count_t / lenght) * 100, 2)
+perc_a = round((s.count_base("A") / lenght) * 100, 2)
+perc_c = round((s.count_base("C") / lenght) * 100, 2)
+perc_g = round((s.count_base("G") / lenght) * 100, 2)
+perc_t = round((s.count_base("T") / lenght) * 100, 2)
 
-print(f"A: {count_a} ({perc_a}%)")
-print(f"C: {count_c} ({perc_c}%)")
-print(f"G: {count_g} ({perc_g}%)")
-print(f"T: {count_t} ({perc_t}%)")
+print(f"A: {s.count_base("A")} ({perc_a}%)")
+print(f"C: {s.count_base("C")} ({perc_c}%)")
+print(f"G: {s.count_base("G")} ({perc_g}%)")
+print(f"T: {s.count_base("T")} ({perc_t}%)")
 
-print(f"Most frequent base: ")
+print(f"Most frequent base: {s.most_frequent_base()}")
