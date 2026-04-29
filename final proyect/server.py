@@ -4,103 +4,85 @@ import termcolor
 from pathlib import Path
 import jinja2 as template
 from urllib.parse import parse_qs, urlparse
+import http.client
+import json
 
 PORT = 8080
-ENSEMBL_URL = "https://rest.ensembl.org"
+SERVER = "https://rest.ensembl.org"
+PARAMS = "?content-type=application/json"
 
 socketserver.TCPServer.allow_reuse_address = True
 
 class TestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
+        status = 200
 
         termcolor.cprint(self.requestline, 'green')
 
         url_path = urlparse(self.path)
         path = url_path.path
         arguments = parse_qs(url_path.query)
+        contents = ""
 
-        #PART 1- PING METHOD
+        #PART 1-
         if path == "/":
             contents = Path('index.html').read_text()
-            self.send_response(200)
-            self.send_header('Content-Type', 'text/html')
-            self.send_header('Content-Length', len(str.encode(contents)))
-            self.end_headers()
-            self.wfile.write(str.encode(contents))
-
 
         elif path == "/listSpecies":
+            try:
 
-            limit_str = arguments.get("limit", [""])[0]
-            url = f"{ENSEMBL_URL}/info/species"
-            response = requests.get(url, headers={"Content-Type": "applications/json"})
-            data = response.json
-            species_list = []
-            for species in data["species"]:
-                if "display_name" in species:
-                    species_list.append(species["display_name"])
+                ENDPOINT = "/info/species"
+                limit_str = arguments.get("limit", [""])[0]
 
-            length_species = len(species_list)
-            if limit_str:
-                limit = int(limit_str)
-                species_list = species_list[:limit]
+                conn = http.client.HTTPSConnection(SERVER)
+                conn.request("GET", ENDPOINT + PARAMS)
+                response = conn.getresponse()
+                data = response.read().decode()
+                d = json.loads(data)
 
-                message = f"showing {length_species} species"
-            else:
-                message = f"Showing all {length_species} species"
-
-            limit = int(limit_str)
+                species_list = d["species"]
 
 
-            url = f"{ENSEMBL_URL}/info/species?content-type=application/json"
-            response = requests.get(u)
-            data = response.json()
+                if "limit" not in arguments or not limit_str or "":
+                    limit = None
+                    filtered_species = species_list
 
-            # Slicing para limitar la lista (sin for)
-            species_list = data["species"][:limit]
+                else:
+                    limit = int(limit_str)
+                    try:
+                        if  not 0 < limit <= len(species_list):
+                            raise ValueError
+                        filtered_species = species_list[:limit]
 
-            # 3. Cargar template y renderizar
-            template_loader = template.FileSystemLoader("html")
-            template_env = template.Environment(loader=template_loader)
-            template_obj = template_env.get_template("listSpecies.html")
-        
-            contents = template_obj.render(species=species_list)
+
+                    except ValueError:
+                        self.send_error(400, "Error:Please enter a number")
+
+
+                species_names = []
+
+                for species in filtered_species:
+                    if "display_name" in species:
+                        species_names.append(species["display_name"])
+                    else:
+                        species_names.append(species.get("name", "Unknown"))
+
+
+                # 3. Cargar template y renderizar
+                template_loader = template.FileSystemLoader("html")
+                template_env = template.Environment(loader=template_loader)
+                template_obj = template_env.get_template("listSpecies.html")
+                contents = template_obj.render(context={f"limit: {limit}, names {species_names}, length {len(species_list)}"})
+            except:
+                status = 404
+                contents = Path('error.html').read_text()
 
             # 4. Enviar respuesta
-            self.send_response(200)
-            self.send_header('Content-Type', 'text/html')
-            self.send_header('Content-Length', len(str.encode(contents)))
-            self.end_headers()
-            self.wfile.write(str.encode(contents))
-
-        #PART 2- GET METHOD
-        elif path == "/get":
-            sequences = {
-                "0": "AAGTCAACCUUCC",
-                "1": "CCGTAAAACGT",
-                "2": "TTUATCCGGGG",
-                "3": "AGCCTAAACGAT",
-                "4": "AGTTCCGATTACG"
-            }
-
-            #parse convierte la url en un diccionario [arguments] y esta [] porque podria haber multiples valores lista, el .get busca una clave y devuelve una lista por eso se usa [0[ acceder al primer elemtno lista
-            seq_number = arguments.get("seq_number", ["0"])[0]
-
-
-            #acceder al valor en el diccionario de sequences
-            seq_value = sequences[seq_number]
-
-            #render
-            template_loader = template.FileSystemLoader("html")
-            template_env = template.Environment(loader=template_loader)
-            template_obj = template_env.get_template("get.html")
-            contents = template_obj.render(seq_number=seq_number, seq_value=seq_value)
-
-            self.send_response(200)  # -- Status line: OK!
-            self.send_header('Content-Type', 'text/html')
-            self.send_header('Content-Length', len(str.encode(contents)))
-            self.end_headers()
-            self.wfile.write(str.encode(contents))
+        self.send_response(status)
+        self.send_header('Content-Type', 'text/html')
+        self.send_header('Content-Length', len(str.encode(contents)))
+        self.end_headers()
+        self.wfile.write(str.encode(contents))
 
 
 Handler = TestHandler
