@@ -31,12 +31,29 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         elif path == "/listSpecies":
 
-            limit_str = arguments.get("limit", ["100"])[0]
+            limit_str = arguments.get("limit", [""])[0]
+            url = f"{ENSEMBL_URL}/info/species"
+            response = requests.get(url, headers={"Content-Type": "applications/json"})
+            data = response.json
+            species_list = []
+            for species in data["species"]:
+                if "display_name" in species:
+                    species_list.append(species["display_name"])
+
+            length_species = len(species_list)
+            if limit_str:
+                limit = int(limit_str)
+                species_list = species_list[:limit]
+
+                message = f"showing {length_species} species"
+            else:
+                message = f"Showing all {length_species} species"
+
             limit = int(limit_str)
 
 
             url = f"{ENSEMBL_URL}/info/species?content-type=application/json"
-            response = requests.get(url)
+            response = requests.get(u)
             data = response.json()
 
             # Slicing para limitar la lista (sin for)
