@@ -83,6 +83,39 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 status = 404
                 contents = Path('error.html').read_text()
 
+
+        elif path == "/karyotype":
+            try:
+                species = arguments.get("species", [""])[0]
+                ENDPOINT = f"/info/assembly/:{species}"
+
+                conn = http.client.HTTPSConnection(SERVER)
+                conn.request("GET", ENDPOINT + PARAMS)
+                response = conn.getresponse()
+                data = response.read().decode()
+                d = json.loads(data)
+
+                list_chromosomes = d["top_level_region"]
+
+                chromosomes_name = ""
+
+                for chromo in list_chromosomes:
+                    chromosomes_name += "<li>" + (chromo["name"]) + "</li>"
+
+                template_loader = template.FileSystemLoader("html")
+                template_env = template.Environment(loader=template_loader)
+                template_obj = template_env.get_template("chromosomes.html")
+                contents = template_obj.render(
+                    context={
+                        "name": chromosomes_name,
+                    }
+                )
+            except Exception as e:
+                print(e)
+                status = 404
+                contents = Path('error.html').read_text()
+
+
             # 4. Enviar respuesta
         self.send_response(status)
         self.send_header('Content-Type', 'text/html')
