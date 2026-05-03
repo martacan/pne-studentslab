@@ -87,7 +87,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         elif path == "/karyotype":
             try:
                 species = arguments.get("species", [""])[0]
-                ENDPOINT = f"/info/assembly/:{species}"
+                ENDPOINT = f"/info/assembly/:{species.replace(" ", "%20")}"
 
                 conn = http.client.HTTPSConnection(SERVER)
                 conn.request("GET", ENDPOINT + PARAMS)
@@ -97,17 +97,16 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
                 karyotype = d["karyotype"]
 
-                chromosomes_name = ""
-
+                karyo = ""
                 for chromo in karyotype:
-                    chromosomes_name += "<li>" + (chromo["name"]) + "</li>"
+                    karyo += chromo + "<br>"
 
                 template_loader = template.FileSystemLoader("html")
                 template_env = template.Environment(loader=template_loader)
                 template_obj = template_env.get_template("chromosomes.html")
                 contents = template_obj.render(
                     context={
-                        "name": chromosomes_name,
+                        "karyo": karyo,
                     }
                 )
             except Exception as e:
