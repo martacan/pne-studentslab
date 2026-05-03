@@ -95,11 +95,11 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 data = response.read().decode()
                 d = json.loads(data)
 
-                list_chromosomes = d["top_level_region"]
+                karyotype = d["karyotype"]
 
                 chromosomes_name = ""
 
-                for chromo in list_chromosomes:
+                for chromo in karyotype:
                     chromosomes_name += "<li>" + (chromo["name"]) + "</li>"
 
                 template_loader = template.FileSystemLoader("html")
