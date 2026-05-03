@@ -8,7 +8,7 @@ import http.client
 import json
 
 PORT = 8080
-SERVER = "https://rest.ensembl.org"
+SERVER = "rest.ensembl.org"
 PARAMS = "?content-type=application/json"
 
 socketserver.TCPServer.allow_reuse_address = True
@@ -30,7 +30,6 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
         elif path == "/listSpecies":
             try:
-
                 ENDPOINT = "/info/species"
                 limit_str = arguments.get("limit", [""])[0]
 
@@ -48,8 +47,9 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                     filtered_species = species_list
 
                 else:
-                    limit = int(limit_str)
                     try:
+                        limit = int(limit_str)
+
                         if  not 0 < limit <= len(species_list):
                             raise ValueError
                         filtered_species = species_list[:limit]
@@ -59,20 +59,26 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                         self.send_error(400, "Error:Please enter a number")
 
 
-                species_names = []
+                species_names = ""
 
                 for species in filtered_species:
-                    if "display_name" in species:
-                        species_names.append(species["display_name"])
+                    if "common_name" in species:
+                        species_names += "<li>" + (species["common_name"]) + "</li>"
                     else:
-                        species_names.append(species.get("name", "Unknown"))
+                        species_names += "<li>" + (species.get("name", "Unknown")) + "</li>"
 
 
                 # 3. Cargar template y renderizar
                 template_loader = template.FileSystemLoader("html")
                 template_env = template.Environment(loader=template_loader)
                 template_obj = template_env.get_template("listSpecies.html")
-                contents = template_obj.render(context={f"limit: {limit}, names {species_names}, length {len(species_list)}"})
+                contents = template_obj.render(
+                    context={
+                        "limit": limit,
+                        "names" : species_names,
+                        "length": len(species_list)
+                    }
+                )
             except:
                 status = 404
                 contents = Path('error.html').read_text()
