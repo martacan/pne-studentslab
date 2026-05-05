@@ -87,7 +87,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         elif path == "/karyotype":
             try:
                 species = arguments.get("species", [""])[0]
-                ENDPOINT = f"/info/assembly/:{species.replace(" ", "%20")}"
+                ENDPOINT = f"/info/assembly/{species.replace(" ", "%20")}"
 
                 conn = http.client.HTTPSConnection(SERVER)
                 conn.request("GET", ENDPOINT + PARAMS)
@@ -99,14 +99,54 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
 
                 karyo = ""
                 for chromo in karyotype:
-                    karyo += chromo + "<br>"
+                    karyo += "<li>" + chromo + "</li>"
 
                 template_loader = template.FileSystemLoader("html")
                 template_env = template.Environment(loader=template_loader)
-                template_obj = template_env.get_template("chromosomes.html")
+                template_obj = template_env.get_template("karyotype.html")
                 contents = template_obj.render(
                     context={
-                        "karyo": karyo,
+                        "species": species,
+                        "karyo": karyo
+                    }
+                )
+            except Exception as e:
+                print(e)
+                status = 404
+                contents = Path('error.html').read_text()
+
+        elif path == "/chromosomeLength":
+            try:
+                species = arguments.get("species", [""])[0]
+                chromo = arguments.get("chromo", [""]) [0]
+                ENDPOINT = f"/info/assembly/{species.replace(" ", "%20")}"
+
+                conn = http.client.HTTPSConnection(SERVER)
+                conn.request("GET", ENDPOINT + PARAMS)
+                response = conn.getresponse()
+                data = response.read().decode()
+                d = json.loads(data)
+
+                regions = d["top_level_region"]
+
+                length = ""
+
+                for region in regions:
+                    if str(region["name"]) == str(chromo):
+
+                        length = region["length"]
+                    else:
+                        length =  region.get("name", "Unknown")
+
+
+                template_loader = template.FileSystemLoader("html")
+                template_env = template.Environment(loader=template_loader)
+                template_obj = template_env.get_template("chromosomeLength.html")
+                contents = template_obj.render(
+                    context={
+                        "length": length,
+                        "species": species,
+                        "chromo": chromo
                     }
                 )
             except Exception as e:
