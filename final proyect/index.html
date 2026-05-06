@@ -2,10 +2,13 @@
 <html lang="en" dir="ltr">
 <body style="background-color: lightpink;">
   <head>
+
     <meta charset="utf-8">
     <title>Browsing human and vertebrates genome</title>
+
   </head>
     <h1>Browsing human and vertebrates genome</h1>
+
     <h2>BASIC level services </h2>
 
     <p> 1) List of species in the genome database: </p>
@@ -29,6 +32,24 @@
       Select the species : <input type="text" name="species" size="20">
          <br> <br>
       Select a chromosome : <input type="text" name="chromo" size="20">
+         <br> <br>
+         <input type="submit" value="SEND">
+     </form>
+    <hr>
+
+    <h2>MEDIUM level services </h2>
+    <p> 4) Stable identifier of the gene: </p>
+     <form action="/geneLookup" method="get">
+      Select the human gene : <input type="text" name="gene" size="20">
+         <br> <br>
+         <input type="submit" value="SEND">
+
+    </form>
+    <hr>
+
+    <p> 5) Sequence of the human gene: </p>
+     <form action="/geneSeq" method="get">
+      Select the human gene : <input type="text" name="gene" size="20">
          <br> <br>
          <input type="submit" value="SEND">
 

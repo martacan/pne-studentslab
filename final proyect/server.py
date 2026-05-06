@@ -7,6 +7,8 @@ from urllib.parse import parse_qs, urlparse
 import http.client
 import json
 
+
+
 PORT = 8080
 SERVER = "rest.ensembl.org"
 PARAMS = "?content-type=application/json"
@@ -110,8 +112,7 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                         "karyo": karyo
                     }
                 )
-            except Exception as e:
-                print(e)
+            except:
                 status = 404
                 contents = Path('error.html').read_text()
 
@@ -149,10 +150,42 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                         "chromo": chromo
                     }
                 )
-            except Exception as e:
-                print(e)
+            except:
                 status = 404
                 contents = Path('error.html').read_text()
+
+        elif path == "/geneLookup":
+            try:
+                gene = arguments.get("gene", [""])[0]
+                ENDPOINT = f"/lookup/symbol/homo_sapiens/{gene.replace(" ", "%20")}"
+
+                conn = http.client.HTTPSConnection(SERVER)
+                conn.request("GET", ENDPOINT + PARAMS)
+                response = conn.getresponse()
+                data = response.read().decode()
+                d = json.loads(data)
+
+
+                if str(d["display_name"]) == str(gene):
+
+                    id = d["id"]
+                else:
+                    id = d.get("display_name", "Unknown")
+
+                template_loader = template.FileSystemLoader("html")
+                template_env = template.Environment(loader=template_loader)
+                template_obj = template_env.get_template("geneLookup.html")
+                contents = template_obj.render(
+                    context={
+                        "id": id,
+                        "gene": gene
+                    }
+                )
+            except:
+                status = 404
+                contents = Path('error.html').read_text()
+
+
 
 
             # 4. Enviar respuesta
