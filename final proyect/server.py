@@ -16,6 +16,24 @@ PARAMS = "?content-type=application/json"
 socketserver.TCPServer.allow_reuse_address = True
 
 class TestHandler(http.server.BaseHTTPRequestHandler):
+    def gene_id(self, gene_symbol):
+        ENDPOINT = f"/lookup/symbol/homo_sapiens/{gene_symbol.replace(" ", "%20")}"
+
+        conn = http.client.HTTPSConnection(SERVER)
+        conn.request("GET", ENDPOINT + PARAMS)
+        response = conn.getresponse()
+        data = response.read().decode()
+        d = json.loads(data)
+
+        if str(d["display_name"]) == str(gene_symbol):
+
+            id = d["id"]
+        else:
+            id = d.get("display_name", "Unknown")
+
+        return id
+
+
     def do_GET(self):
         status = 200
 
@@ -157,27 +175,15 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
         elif path == "/geneLookup":
             try:
                 gene = arguments.get("gene", [""])[0]
-                ENDPOINT = f"/lookup/symbol/homo_sapiens/{gene.replace(" ", "%20")}"
 
-                conn = http.client.HTTPSConnection(SERVER)
-                conn.request("GET", ENDPOINT + PARAMS)
-                response = conn.getresponse()
-                data = response.read().decode()
-                d = json.loads(data)
-
-
-                if str(d["display_name"]) == str(gene):
-
-                    id = d["id"]
-                else:
-                    id = d.get("display_name", "Unknown")
+                ensembl_id = self.gene_id(gene)
 
                 template_loader = template.FileSystemLoader("html")
                 template_env = template.Environment(loader=template_loader)
                 template_obj = template_env.get_template("geneLookup.html")
                 contents = template_obj.render(
                     context={
-                        "id": id,
+                        "id": ensembl_id, #de aqui se mete en la funcion y coge el id que he returneado
                         "gene": gene
                     }
                 )
@@ -185,7 +191,34 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 status = 404
                 contents = Path('error.html').read_text()
 
+        elif path == "/geneSeq":
+            try:
+                gene = arguments.get("gene", [""])[0]
 
+                ensembl_id = self.gene_id(gene)
+
+                ENDPOINT = f"/sequence/id/{ensembl_id}"
+
+                conn = http.client.HTTPSConnection(SERVER)
+                conn.request("GET", ENDPOINT + "?content-type=text/plain")
+                response = conn.getresponse()
+                sequence = response.read().decode()
+
+
+                template_loader = template.FileSystemLoader("html")
+                template_env = template.Environment(loader=template_loader)
+                template_obj = template_env.get_template("geneSeq.html")
+                contents = template_obj.render(
+                    context={
+                        "sequence": sequence,
+                        "gene": gene,
+                        "id":ensembl_id
+
+                    }
+                )
+            except:
+                status = 404
+                contents = Path('error.html').read_text()
 
 
             # 4. Enviar respuesta
@@ -211,3 +244,6 @@ with socketserver.TCPServer(("", PORT), Handler) as httpd:
         print("")
         print("Stopped by the user")
         httpd.server_close()
+
+
+

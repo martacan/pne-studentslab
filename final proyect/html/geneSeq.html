@@ -8,8 +8,11 @@
 </head>
 <body style="background-color: powderblue;">
     <h1> Gene: {{ context.gene }}</h1>
-    <p> The id is:
-       <ul> {{ context.sequence }} </ul>  </p>
+    <h1> Sequence: </h1>
+    <div style="height: 250px; overflow-y: auto; border: 1px solid black; background: pink; padding: 10px; font-family: monospace; font-size: 18px; white-space: pre-wrap; word-wrap: break-word; line-height: 1.5;">
+        {{ context.sequence }}
+
+    </div>
 
 
     <br>
