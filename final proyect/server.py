@@ -221,6 +221,23 @@ class TestHandler(http.server.BaseHTTPRequestHandler):
                 contents = Path('error.html').read_text()
 
 
+        elif path == "/geneInfo":
+            try:
+                gene = arguments.get("gene", [""])[0]
+                ENDPOINT = f"/lookup/symbol/homo_sapiens/{gene.replace(" ", "%20")}"
+
+
+
+                conn = http.client.HTTPSConnection(SERVER)
+                conn.request("GET", ENDPOINT + PARAMS)
+                response = conn.getresponse()
+                data = response.read().decode()
+                d = json.loads(data)
+
+
+
+
+
             # 4. Enviar respuesta
         self.send_response(status)
         self.send_header('Content-Type', 'text/html')
